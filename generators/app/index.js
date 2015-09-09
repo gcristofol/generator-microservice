@@ -13,6 +13,12 @@ module.exports = yeoman.generators.Base.extend({
     ));
 
     var prompts = [{
+      type    : 'input',
+      name    : 'name',
+      message : 'Your project name',
+      default : this.appname // Default to current folder name
+    },
+    {
       type: 'confirm',
       name: 'someOption',
       message: 'Would you like to enable this option?',
@@ -22,6 +28,7 @@ module.exports = yeoman.generators.Base.extend({
     this.prompt(prompts, function (props) {
       this.props = props;
       // To access props later use this.props.someOption;
+	  console.log('props' + JSON.stringify(this.props, null, 2));
 
       done();
     }.bind(this));
@@ -30,12 +37,13 @@ module.exports = yeoman.generators.Base.extend({
   writing: {
     app: function () {
       this.fs.copy(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json')
-      );
-      this.fs.copy(
         this.templatePath('_bower.json'),
         this.destinationPath('bower.json')
+      );
+      this.fs.copyTpl(
+        this.templatePath('_index.html'),
+        this.destinationPath('public/index.html'),
+        this.props
       );
     },
 
@@ -52,6 +60,6 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
-    this.installDependencies();
+   // this.installDependencies();
   }
 });
